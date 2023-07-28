@@ -44,6 +44,8 @@ def execute_statement(statement):
             if len(tokens["tokens"]) > 1:
                 variables[tokens["tokens"][1]] = result
             #print(variables)
+        elif len(tokens["tokens"]) > 1  and  tokens["tokens"][1] == "=":
+            cmd_assign(tokens)
         elif command == "REM":
             do_nothing = True
         elif command == ""  and  len(tokens["tokens"]) == 1:
@@ -59,6 +61,16 @@ def cmd_print(tokens):
         elif token != "PRINT":
             result += token + " "
     print( result )
+
+def cmd_assign(tokens):
+    if len(tokens["tokens"]) < 3:
+        print_error(103,"Not enough tokens for assignment")
+    if tokens["tokens"][0] in variables:
+        print_error(104,"Variable already exists: " + tokens["tokens"][0])
+    if tokens["tokens"][2][0:7] == "#STRING":
+        variables[tokens["tokens"][0]] = tokens["substrings"][int(tokens["tokens"][2][8:])-1]
+    else:
+        variables[tokens["tokens"][0]] = tokens["tokens"][2]
 
 parser = argparse.ArgumentParser(description="Execute TREE commands.")
 parser.add_argument("--code", help="Code to execute")
