@@ -89,6 +89,10 @@ def execute_statement(statement):
             print_error(102,"Unknown command: " + tokens["tokens"][0])
 
 def cmd_print(tokens):
+    eol = True
+    if tokens["tokens"][-1] == ";":
+        del tokens["tokens"][-1]
+        eol = False
     result = ""
     for token in tokens["tokens"]:
         if isinstance(token, int) or isinstance(token, float):
@@ -97,7 +101,10 @@ def cmd_print(tokens):
             result += tokens["substrings"][int(token[8:])-1]
         elif token != "PRINT":
             result += token + " "
-    print( result )
+    if eol:
+        print( result )
+    else:
+        print( result, end="" )
 
 def cmd_assign(tokens):
     if len(tokens["tokens"]) < 3:
