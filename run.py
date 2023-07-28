@@ -4,6 +4,40 @@ from os.path import exists
 
 variables = {}
 
+def get_left_right(tokens, index):
+    if index == 1  or  index >= len(tokens)-1:
+        print_error(200,"Invalid token index for addition")
+    left = int(tokens[index-1]) if tokens[index-1].isdigit() else float([tokens[index-1]])
+    right = int(tokens[index+1]) if tokens[index+1].isdigit() else float([tokens[index+1]])
+    return left, right
+
+def remove_adjacent_tokens(tokens, index):
+    if index == 0  or  index >= len(tokens)-1:
+        print_error(201,"Invalid token index for removal")
+    del tokens[index+1]
+    del tokens[index-1]
+    return tokens
+
+def perform_math(tokens):
+    for index, token in enumerate(tokens):
+        if token == "+":
+            left, right = get_left_right(tokens, index)
+            tokens[index] = left + right
+            tokens = remove_adjacent_tokens(tokens, index)
+        elif token == "-":
+            left, right = get_left_right(tokens, index)
+            tokens[index] = left - right
+            tokens = remove_adjacent_tokens(tokens, index)
+        elif token == "*":
+            left, right = get_left_right(tokens, index)
+            tokens[index] = left * right
+            tokens = remove_adjacent_tokens(tokens, index)
+        elif token == "/":
+            left, right = get_left_right(tokens, index)
+            tokens[index] = left / right
+            tokens = remove_adjacent_tokens(tokens, index)
+    return tokens
+
 def tokenize_statement(statement):
     tokens = []
     # For every substring, extract it into a temporary variable
@@ -21,6 +55,7 @@ def tokenize_statement(statement):
         for i in range(0,len(tokens)):
             if tokens[i] == var_name:
                 tokens[i] = var_value
+    tokens = perform_math(tokens)
     return {"code":0,"tokens":tokens,"substrings":substrings}
 
 def print_error(code, error_statement):
@@ -56,7 +91,9 @@ def execute_statement(statement):
 def cmd_print(tokens):
     result = ""
     for token in tokens["tokens"]:
-        if token[0:7] == "#STRING":
+        if isinstance(token, int) or isinstance(token, float):
+            result += str(token) + " "
+        elif token[0:7] == "#STRING":
             result += tokens["substrings"][int(token[8:])-1]
         elif token != "PRINT":
             result += token + " "
@@ -85,4 +122,4 @@ if("file" in args  and  args.file != None):
         for line in f:
             execute_statement(line)
 
-#execute_statement("PRINT \"WHAT IS THE OFFSET?\"")
+#execute_statement("PRINT \"HELLO, WORLD\"")
