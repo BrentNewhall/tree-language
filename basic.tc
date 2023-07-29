@@ -6,3 +6,5 @@ five = 2 + 3
 PRINT " " five
 name = "Mike Nelson"
 PRINT "Name is " name
+testarray(1) = 10
+PRINT "testarray(1) = " testarray(1)
