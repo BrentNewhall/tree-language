@@ -1,0 +1,11 @@
+REM This is a comment.
+
+PRINT "Hello, World!"
+PRINT "2 + 3 =" ;
+five = 2 + 3
+PRINT " " five
+PRINT "What is the amount?"
+REM INPUT amount
+PRINT "Amount is " amount
+name = "Mike Nelson"
+PRINT "Name is " name
