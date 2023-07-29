@@ -115,9 +115,9 @@ def cmd_print(tokens):
         elif token != "PRINT":
             result += token + " "
     if eol:
-        print( result )
+        print( result.rstrip() )
     else:
-        print( result, end="" )
+        print( result.rstrip(), end="" )
 
 def cmd_assign(tokens):
     if len(tokens["tokens"]) < 3:
