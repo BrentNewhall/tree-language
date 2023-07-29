@@ -4,6 +4,15 @@ import numbers
 from os.path import exists
 
 variables = {}
+arrays = {}
+
+def get_array_identifier(token):
+    if "(" in token  and  ")" in token:
+        start = token.find("(")
+        end = token.find(")")
+        if start > 0  and  end == len(token)-1:
+            return token[0:start], int(token[start+1:end])
+    return False
 
 def get_token_value(token, substrings):
     if token[0:7] == "#STRING":
@@ -68,6 +77,17 @@ def tokenize_statement(statement):
         for i in range(0,len(tokens)):
             if tokens[i] == var_name:
                 tokens[i] = var_value
+    for i in range(1,len(tokens)):
+        array_id = get_array_identifier(tokens[i])
+        if array_id:
+            print("GOT ARRAY ID: " + str(array_id))
+            if array_id[0] not in arrays:
+                print("ADDING ARRAY: " + str(array_id))
+                arrays[array_id[0]] = [0]
+                arrays[array_id[0]][array_id[1]-1] = 0
+            else:
+                print("ARRAY EXISTS: " + str(array_id))
+                tokens[i] = arrays[array_id[0]][array_id[1]]
     tokens = perform_math(tokens, substrings)
     return {"code":0,"tokens":tokens,"substrings":substrings}
 
@@ -124,6 +144,15 @@ def cmd_assign(tokens):
         print_error(103,"Not enough tokens for assignment")
     if tokens["tokens"][0] in variables:
         print_error(104,"Variable already exists: " + tokens["tokens"][0])
+    array_id = get_array_identifier(tokens["tokens"][0])
+    if array_id:
+        array_name = array_id[0]
+        array_index = array_id[1] - 1
+        if array_id[0] not in arrays:
+            arrays[array_name] = []
+        while array_index >= len(arrays[array_name]):
+            arrays[array_name].append(0)
+        arrays[array_name][array_index] = tokens["tokens"][2]
     if tokens["tokens"][2][0:7] == "#STRING":
         variables[tokens["tokens"][0]] = tokens["substrings"][int(tokens["tokens"][2][8:])-1]
     else:
