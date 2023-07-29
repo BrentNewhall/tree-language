@@ -31,6 +31,6 @@ def test_file(filename):
 # Find all files ending in .tc and run them as test cases.
 for filename in os.listdir('.'):
     if filename.endswith('.tc'):
-        print('##### BEGIN TEST CASE:', filename)
+        print('##### BEGIN TEST:', filename)
         test_file(filename)
         print()
