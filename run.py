@@ -1,14 +1,27 @@
 import sys
 import argparse
+import numbers
 from os.path import exists
 
 variables = {}
 
-def get_left_right(tokens, index):
+def get_token_value(token, substrings):
+    if token[0:7] == "#STRING":
+        token = substrings[int(token[8:])-1]
+    try:
+        token = int(token)
+    except ValueError:
+        try:
+            token = float(token)
+        except ValueError:
+            pass
+    return token
+
+def get_left_right(tokens, index, substrings):
     if index == 1  or  index >= len(tokens)-1:
         print_error(200,"Invalid token index for addition")
-    left = int(tokens[index-1]) if tokens[index-1].isdigit() else float([tokens[index-1]])
-    right = int(tokens[index+1]) if tokens[index+1].isdigit() else float([tokens[index+1]])
+    left = get_token_value(tokens[index-1], substrings)
+    right = get_token_value(tokens[index+1], substrings)
     return left, right
 
 def remove_adjacent_tokens(tokens, index):
@@ -18,23 +31,23 @@ def remove_adjacent_tokens(tokens, index):
     del tokens[index-1]
     return tokens
 
-def perform_math(tokens):
+def perform_math(tokens, substrings):
     for index, token in enumerate(tokens):
         if token == "+":
-            left, right = get_left_right(tokens, index)
-            tokens[index] = left + right
+            left, right = get_left_right(tokens, index, substrings)
+            tokens[index] = str(left + right)
             tokens = remove_adjacent_tokens(tokens, index)
         elif token == "-":
-            left, right = get_left_right(tokens, index)
-            tokens[index] = left - right
+            left, right = get_left_right(tokens, index, substrings)
+            tokens[index] = str(left - right)
             tokens = remove_adjacent_tokens(tokens, index)
         elif token == "*":
-            left, right = get_left_right(tokens, index)
-            tokens[index] = left * right
+            left, right = get_left_right(tokens, index, substrings)
+            tokens[index] = str(left * right)
             tokens = remove_adjacent_tokens(tokens, index)
         elif token == "/":
-            left, right = get_left_right(tokens, index)
-            tokens[index] = left / right
+            left, right = get_left_right(tokens, index, substrings)
+            tokens[index] = str(left / right)
             tokens = remove_adjacent_tokens(tokens, index)
     return tokens
 
@@ -55,7 +68,7 @@ def tokenize_statement(statement):
         for i in range(0,len(tokens)):
             if tokens[i] == var_name:
                 tokens[i] = var_value
-    tokens = perform_math(tokens)
+    tokens = perform_math(tokens, substrings)
     return {"code":0,"tokens":tokens,"substrings":substrings}
 
 def print_error(code, error_statement):
