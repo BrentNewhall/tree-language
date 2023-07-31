@@ -2,3 +2,6 @@ Hello, World!
 2 + 3 = 5
 Name is Mike Nelson
 testarray(1) = 10
+testarray = 10
+myarray = 1 2 3 4 5
+myarray(1) = 1

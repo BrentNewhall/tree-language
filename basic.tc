@@ -8,3 +8,7 @@ name = "Mike Nelson"
 PRINT "Name is " name
 testarray(1) = 10
 PRINT "testarray(1) = " testarray(1)
+PRINT "testarray = " testarray
+myarray() = 1 2 3 4 5
+PRINT "myarray = " myarray
+PRINT "myarray(1) = " myarray(1)
